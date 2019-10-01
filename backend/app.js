@@ -4,6 +4,7 @@ const { buildSchema } = require('graphql');
 const mongoose = require('mongoose');
 
 const Event = require('./models/event');
+const User = require('./models/user');
 
 const app = express();
 
@@ -17,6 +18,14 @@ app.use('/graphql', graphqlHttp({
       description: String!
       price: Float!
       date: String!
+      creator: User!
+    }
+
+    type User {
+      _id: ID!
+      email: String!
+      password: String
+      createdEvents: [Event!]!
     }
 
     input EventInput {
@@ -26,12 +35,19 @@ app.use('/graphql', graphqlHttp({
       date: String!
     }
 
+    input UserInput {
+      email: String!
+      password: String!
+    }
+
     type RootQuery {
       events: [Event!]!
+      users: [User!]!
     }
 
     type RootMutation {
       createEvent(eventInput: EventInput): Event
+      createUser(userInput: UserInput): User
     }
 
     schema {
@@ -41,17 +57,46 @@ app.use('/graphql', graphqlHttp({
   `),
   rootValue: {
     events() {
-      return Event.find();
+      return Event.find().populate('creator', ['email']);
     },
-    createEvent({ eventInput }) {
+    users() {
+      return User.find().select(['email']);
+    },
+    async createEvent({ eventInput }) {
       const event = new Event({
         title: eventInput.title,
         description: eventInput.description,
         price: eventInput.price,
-        date: new Date(eventInput.date)
+        date: new Date(eventInput.date),
+        creator: '5d93b1feaf1fb610e35801f7'
       });
 
+      const user = await User.findById(event.creator);
+
+      if (!user) {
+        throw Error('User not found');
+      }
+
+      user.createdEvents.push(event);
+      user.save();
+
       return event.save();
+    },
+    async createUser({ userInput }) {
+      let user = await User.findOne({ email: userInput.email });
+
+      if (user) {
+        throw Error('User already exists')
+      }
+
+      user = new User({
+        email: userInput.email,
+        password: userInput.password
+      });
+
+      await user.save();
+
+      return { ...user._doc, password: undefined };
     }
   },
   graphiql: true
