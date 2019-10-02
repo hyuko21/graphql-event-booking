@@ -2,37 +2,50 @@
 
 const Event = require('../../models/event');
 const User = require('../../models/user');
+const Booking = require('../../models/booking');
+
+const responses = {
+  user: instance => ({
+    ...instance._doc,
+    createdEvents: () => events(instance.createdEvents)
+  }),
+  event: instance => ({
+    ...instance._doc,
+    date: new Date(instance.date).toISOString(),
+    creator: () => user(instance.creator)
+  }),
+  booking: instance => ({
+    ...instance._doc,
+    event: () => singleEvent(instance.event),
+    user: () => user(instance.user),
+    createdAt: new Date(instance.createdAt).toISOString(),
+    updatedAt: new Date(instance.updatedAt).toISOString()
+  })
+};
 
 async function user(userId) {
   const user = await User.findById(userId).select('-password');
 
-  return {
-    ...user._doc,
-    createdEvents: () => events(user.createdEvents)
-  };
+  return responses.user(user);
 }
 
 async function events(eventsIds) {
   const events = await Event.find({ _id: { $in: eventsIds }});
 
-  return events.map(event => {
-    return {
-      ...event._doc,
-      creator: () => user(event.creator)
-    };
-  });
+  return events.map(event => responses.event(event));
+}
+
+async function singleEvent(eventId) {
+  const event = await Event.findById(eventId);
+
+  return responses.event(event);
 }
 
 module.exports = {
   async events() {
     const events = await Event.find();
 
-    return events.map(event => {
-      return {
-        ...event._doc,
-        creator: () => user(event.creator)
-      };
-    });
+    return events.map(event => responses.event(event));
   },
   async users() {
     const users = await User.find().select('-password');
@@ -43,6 +56,11 @@ module.exports = {
         createdEvents: () => events(user.createdEvents)
       };
     });
+  },
+  async bookings() {
+    const bookings = await Booking.find();
+
+    return bookings.map(booking => responses.booking(booking));
   },
   async createEvent({ eventInput }) {
     const event = new Event({
@@ -64,10 +82,7 @@ module.exports = {
 
     await event.save();
 
-    return {
-      ...event._doc,
-      creator: () => user(event.creator)
-    };
+    return responses.event(event);
   },
   async createUser({ userInput }) {
     let user = await User.findOne({ email: userInput.email });
@@ -83,6 +98,31 @@ module.exports = {
 
     await user.save();
 
-    return { ...user._doc, password: undefined, createdEvents: () => events(user.createdEvents) };
+    return responses.user(user);
+  },
+  async bookEvent({ eventId }) {
+    const fetchedEvent = await Event.findOne({ _id: eventId });
+
+    if (!fetchedEvent) {
+      throw Error('Event not found');
+    }
+
+    const booking = new Booking({
+      user: '5d93b9afb0c44124a7de9c26',
+      event: fetchedEvent.id
+    });
+
+    await booking.save();
+
+    return responses.booking(booking);
+  },
+  async cancelBooking({ bookingId }) {
+    const booking = await Booking.findByIdAndDelete(bookingId).populate('event');
+
+    if (!booking) {
+      throw Error('Booking not found');
+    }
+
+    return responses.event(booking.event);
   }
 }
