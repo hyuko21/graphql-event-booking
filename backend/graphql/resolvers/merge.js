@@ -29,6 +29,7 @@ const transform = {
   async user(instance) {
     return {
       ...instance._doc,
+      password: undefined,
       createdEvents: () => query.events(instance.createdEvents)
     };
   },

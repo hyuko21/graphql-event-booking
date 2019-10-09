@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const graphQlSchema = require('./graphql/schema');
 const graphQlResolvers = require('./graphql/resolvers');
+const isAuthMiddleware = require('./middleware/is-auth');
 
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +14,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(isAuthMiddleware);
 
 app.use('/graphql', graphqlHttp({
   schema: graphQlSchema,

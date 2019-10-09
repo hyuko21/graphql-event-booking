@@ -1,5 +1,6 @@
 'use strict';
 
+const User = require('../../models/user');
 const Event = require('../../models/event');
 const {
   transform: {
@@ -13,13 +14,17 @@ module.exports = {
 
     return events.map(event => transformEvent(event));
   },
-  async createEvent({ eventInput }) {
+  async createEvent({ eventInput }, req) {
+    if (!req.isAuth) {
+      throw Error('Unauthenticated');
+    }
+
     const event = new Event({
       title: eventInput.title,
       description: eventInput.description,
       price: eventInput.price,
       date: new Date(eventInput.date),
-      creator: '5d93b9afb0c44124a7de9c26'
+      creator: req.userId
     });
 
     const creator = await User.findById(event.creator);
