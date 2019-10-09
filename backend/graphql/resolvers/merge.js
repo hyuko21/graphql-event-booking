@@ -53,6 +53,5 @@ const transform = {
 };
 
 module.exports = {
-  query,
   transform
 };
