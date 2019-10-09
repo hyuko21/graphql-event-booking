@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const graphQlSchema = require('./graphql/schema');
 const graphQlResolvers = require('./graphql/resolvers');
 
+const PORT = process.env.PORT || 3000;
+
 const app = express();
 
 app.use(express.json());
@@ -34,7 +36,7 @@ mongoose.connect(
     if (err) {
       console.log(err);
     } else {
-      app.listen(3000);
+      app.listen(PORT, () => console.log(`Server started at port ${PORT}`));
     }
   }
 );
