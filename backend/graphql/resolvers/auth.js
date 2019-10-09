@@ -14,13 +14,13 @@ module.exports = {
     return users.map(user => transformUser(user));
   },
   async createUser({ userInput }) {
-    let user = await User.findOne({ email: userInput.email });
+    const existingUser = await User.findOne({ email: userInput.email });
 
-    if (user) {
+    if (existingUser) {
       throw Error('User already exists')
     }
 
-    user = new User({
+    const user = new User({
       email: userInput.email,
       password: userInput.password
     });
