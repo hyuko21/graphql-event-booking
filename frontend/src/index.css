@@ -8,16 +8,22 @@ body {
 }
 
 .form-control label,
-.form-control input {
+.form-control input,
+.form-control textarea {
   width: 100%;
   display: block;
 }
 
-.form-control input {
+.form-control input,
+.form-control textarea {
   border: 1px solid rgba(0, 0, 0, 0.26);
   border-radius: 5px;
   padding: 0.5rem;
   font: inherit;
+}
+
+.form-control textarea {
+  resize: vertical;
 }
 
 .form-control label {
@@ -25,7 +31,7 @@ body {
 }
 
 .form-control {
-  margin-bottom: 1.25rem;
+  margin: 1.25rem 0;
 }
 
 .form-actions button,
@@ -47,4 +53,12 @@ body {
 .btn:active {
   background: #6219d6;
   border-color: #6219d6;
+}
+
+.error {
+  font-size: 15px;
+  background: #f54242;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 5px;
 }
