@@ -1,7 +1,7 @@
 const BASE_URL = 'http://localhost:3000/graphql'
 
 export default {
-  async post(data) {
+  async request(data) {
     const response = await fetch(BASE_URL, {
       method: 'POST',
       body: JSON.stringify(data),

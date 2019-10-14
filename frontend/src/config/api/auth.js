@@ -2,7 +2,7 @@ import api from './api'
 
 export default {
   users() {
-    return api.post({
+    return api.request({
       query: `
         query {
           users {
@@ -14,7 +14,7 @@ export default {
     })
   },
   createUser(data) {
-    return api.post({
+    return api.request({
       query: `
         mutation {
           createUser(userInput: { email: "${data.email}", password: "${data.password}" }) {
@@ -26,7 +26,7 @@ export default {
     })
   },
   login(data) {
-    return api.post({
+    return api.request({
       query: `
         query {
           login(email: "${data.email}", password: "${data.password}") {
