@@ -10,7 +10,9 @@ const Navigation = props => (
     {context => (
       <header className='main-navigation'>
         <div className='main-navigation__logo'>
-          <h1>EasyEvent</h1>
+          <NavLink to='/events'>
+            <h1>EasyEvent</h1>
+          </NavLink>
         </div>
 
         <nav className='main-navigation__items'>
