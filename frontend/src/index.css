@@ -6,3 +6,45 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.form-control label,
+.form-control input {
+  width: 100%;
+  display: block;
+}
+
+.form-control input {
+  border: 1px solid rgba(0, 0, 0, 0.26);
+  border-radius: 5px;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.form-control label {
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  margin-bottom: 1.25rem;
+}
+
+.form-actions button,
+.btn {
+  background: #5101d1;
+  font: inherit;
+  border: 1px solid #5101d1;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  margin: 0.75rem 1rem 0 0;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.26);
+  color: #fff;
+  cursor: pointer;
+}
+
+.form-actions button:hover,
+.form-actions button:active,
+.btn:hover,
+.btn:active {
+  background: #6219d6;
+  border-color: #6219d6;
+}
