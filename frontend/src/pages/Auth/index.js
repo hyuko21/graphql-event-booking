@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+
+import AuthContext from '../../context/auth-context'
 
 import './styles.css'
 
 import auth from '../../config/api/auth'
 
 function AuthPage() {
+  const authContext = useContext(AuthContext)
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLogin, setIsLogin] = useState(true)
@@ -20,7 +24,14 @@ function AuthPage() {
       return
     }
 
-    const result = await auth[isLogin ? 'login' : 'createUser']({ email, password })
+    let result = null
+
+    if (isLogin) {
+      result = await auth.login({ email, password })
+      return authContext.login(result.data.login)
+    }
+
+    result = await auth.createUser({ email, password })
   }
 
   return (
