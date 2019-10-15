@@ -16,9 +16,10 @@ export default {
       `,
     })
   },
-  createEvent(data) {
-    return api.request({
-      query: `
+  createEvent(data, authToken) {
+    return api.request(
+      {
+        query: `
         mutation {
           createEvent(eventInput: { title: "${data.title}", price: ${data.price}, date: "${data.date}", description: "${data.description}" }) {
             _id
@@ -29,6 +30,8 @@ export default {
           }
         }
       `,
-    })
+      },
+      authToken
+    )
   },
 }
