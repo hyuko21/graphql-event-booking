@@ -11,6 +11,10 @@ export default {
             price
             date
             description
+            creator {
+              _id
+              email
+            }
           }
         }
       `,
@@ -27,6 +31,10 @@ export default {
             price
             date
             description
+            creator {
+              _id
+              email
+            }
           }
         }
       `,
