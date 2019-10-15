@@ -40,7 +40,9 @@ mongoose.connect(
     process.env.MONGO_USER
   }:${
     process.env.MONGO_PASSWORD
-  }@cluster0-lkk9t.mongodb.net/${
+  }@${
+    process.env.MONGO_SRV_URL
+  }/${
     process.env.MONGO_DB
   }?retryWrites=true&w=majority`,
   {
