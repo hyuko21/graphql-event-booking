@@ -4,15 +4,12 @@ import AuthContext from '../../context/auth-context'
 
 import './styles.css'
 
-import auth from '../../config/api/auth'
-
 function AuthPage() {
   const authContext = useContext(AuthContext)
 
   const emailRef = useRef('')
   const passwordRef = useRef('')
   const [isLogin, setIsLogin] = useState(true)
-  const [errorMessage, setErrorMessage] = useState(null)
 
   const switchModeHandler = () => {
     setIsLogin(!isLogin)
@@ -28,27 +25,17 @@ function AuthPage() {
       return
     }
 
-    let result = null
-
     if (isLogin) {
-      result = await auth.login({ email, password })
-
-      if (result.errors) {
-        return setErrorMessage(result.errors[0].message)
-      }
-
-      return authContext.login(result.data.login)
+      return authContext.login({ email, password })
     }
 
-    result = await auth.createUser({ email, password })
+    await authContext.createUser({ email, password })
+    switchModeHandler()
   }
 
   return (
     <form className='auth-form' onSubmit={submitHandler}>
       <h1>{isLogin ? 'Login' : 'Signup'}</h1>
-
-      {errorMessage && <span className='error'>{errorMessage}</span>}
-
       <div className='form-control'>
         <label htmlFor='email'>E-mail</label>
         <input type='email' id='email' ref={emailRef} />

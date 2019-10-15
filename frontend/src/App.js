@@ -6,25 +6,68 @@ import EventsPage from './pages/Events'
 import BookingsPage from './pages/Bookings'
 import Navigation from './components/Navigation'
 
-import AuthContext from './context/auth-context'
+import AppContext from './context/app-context'
 
 import './App.css'
 
+import authApi from './services/api/auth'
+import eventsApi from './services/api/events'
+
 const INITIAL_STATE = {
-  userId: null,
-  token: null,
-  tokenExpiration: null,
+  auth: {
+    userId: null,
+    token: null,
+  },
+  events: {
+    events: [],
+  },
 }
 
 function App() {
-  const [authState, setAuthState] = useState(INITIAL_STATE)
+  const [authState, setAuthState] = useState(INITIAL_STATE.auth)
+  const [eventsState, setEventsState] = useState(INITIAL_STATE.events)
 
-  const login = loginData => setAuthState(loginData)
-  const logout = () => setAuthState(INITIAL_STATE)
+  const auth = {
+    ...authState,
+
+    async createUser(userData) {
+      return authApi.createUser(userData)
+    },
+
+    async login(loginData) {
+      const result = await authApi.login(loginData)
+      setAuthState(result.data.login)
+    },
+
+    logout() {
+      setAuthState(INITIAL_STATE.auth)
+    },
+  }
+
+  const events = {
+    ...eventsState,
+
+    async createEvent(eventData) {
+      await eventsApi.createEvent(eventData, auth.token)
+
+      return this.getEvents()
+    },
+
+    async getEvents() {
+      const result = await eventsApi.events()
+
+      setEventsState({ events: result.data.events })
+    },
+  }
+
+  const store = {
+    auth,
+    events,
+  }
 
   return (
     <BrowserRouter>
-      <AuthContext.Provider value={{ ...authState, login, logout }}>
+      <AppContext store={store}>
         <Navigation />
         <main className='main-content'>
           <Switch>
@@ -38,7 +81,7 @@ function App() {
             <Redirect from='*' to='/' exact />
           </Switch>
         </main>
-      </AuthContext.Provider>
+      </AppContext>
     </BrowserRouter>
   )
 }

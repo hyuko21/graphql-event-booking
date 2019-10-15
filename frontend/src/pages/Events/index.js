@@ -1,18 +1,26 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 
 import Modal from '../../components/Modal'
 import Backdrop from '../../components/Backdrop'
 
+import AuthContext from '../../context/auth-context'
+import EventsContext from '../../context/events-context'
+
 import './styles.css'
 
-import apiEvents from '../../config/api/events'
-
 function EventsPage() {
+  const authContext = useContext(AuthContext)
+  const eventsContext = useContext(EventsContext)
+
   const [isCreatingEvent, setIsCreatingEvent] = useState(false)
   const titleRef = useRef(null)
   const priceRef = useRef(null)
   const dateRef = useRef(null)
   const descriptionRef = useRef(null)
+
+  useEffect(() => {
+    eventsContext.getEvents()
+  }, [])
 
   const startCreatingEvent = () => {
     setIsCreatingEvent(true)
@@ -24,13 +32,13 @@ function EventsPage() {
     const date = dateRef.current.value
     const description = descriptionRef.current.value
 
-    if (!title.trim() || isNaN(price) || !date.trim() || !description.trim()) {
+    if (!title.trim() || price <= 0 || !date.trim() || !description.trim()) {
       return
     }
 
     const event = { title, price, date, description }
 
-    await apiEvents.createEvent(event)
+    await eventsContext.createEvent(event)
 
     setIsCreatingEvent(false)
   }
@@ -66,12 +74,14 @@ function EventsPage() {
           </Modal>
         </>
       )}
-      <div className='events-control'>
-        <p>Share your own Events!</p>
-        <button className='btn' onClick={startCreatingEvent}>
-          Create Event
-        </button>
-      </div>
+      {authContext.token && (
+        <div className='events-control'>
+          <p>Share your own Events!</p>
+          <button className='btn' onClick={startCreatingEvent}>
+            Create Event
+          </button>
+        </div>
+      )}
     </>
   )
 }
