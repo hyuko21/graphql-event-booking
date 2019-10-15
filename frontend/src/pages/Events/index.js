@@ -2,6 +2,7 @@ import React, { useState, useRef, useContext, useEffect } from 'react'
 
 import Modal from '../../components/Modal'
 import Backdrop from '../../components/Backdrop'
+import EventList from '../../components/Events/EventList'
 
 import AuthContext from '../../context/auth-context'
 import EventsContext from '../../context/events-context'
@@ -82,6 +83,7 @@ function EventsPage() {
           </button>
         </div>
       )}
+      <EventList events={eventsContext.events} authUserId={authContext.userId} />
     </>
   )
 }

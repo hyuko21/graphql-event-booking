@@ -48,9 +48,9 @@ function App() {
     ...eventsState,
 
     async createEvent(eventData) {
-      await eventsApi.createEvent(eventData, auth.token)
-
-      return this.getEvents()
+      const result = await eventsApi.createEvent(eventData, auth.token)
+      
+      setEventsState({ events: [...eventsState.events, result.data.createEvent]})
     },
 
     async getEvents() {
