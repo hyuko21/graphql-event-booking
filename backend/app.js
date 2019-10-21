@@ -46,8 +46,7 @@ mongoose.connect(
     process.env.MONGO_DB
   }?retryWrites=true&w=majority`,
   {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+    useNewUrlParser: true
   },
   function(err) {
     if (err) {

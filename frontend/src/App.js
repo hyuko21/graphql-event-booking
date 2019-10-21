@@ -20,6 +20,7 @@ const INITIAL_STATE = {
   },
   events: {
     events: [],
+    isLoading: false,
   },
 }
 
@@ -48,15 +49,21 @@ function App() {
     ...eventsState,
 
     async createEvent(eventData) {
+      const currentEvents = eventsState.events
+
+      setEventsState({ isLoading: true })
+
       const result = await eventsApi.createEvent(eventData, auth.token)
-      
-      setEventsState({ events: [...eventsState.events, result.data.createEvent]})
+
+      setEventsState({ events: [...currentEvents, result.data.createEvent], isLoading: false })
     },
 
     async getEvents() {
+      setEventsState({ isLoading: true })
+
       const result = await eventsApi.events()
 
-      setEventsState({ events: result.data.events })
+      setEventsState({ events: result.data.events, isLoading: false })
     },
   }
 

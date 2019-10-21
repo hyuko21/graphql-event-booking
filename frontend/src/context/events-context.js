@@ -4,4 +4,5 @@ export default React.createContext({
   events: [],
   createEvent: eventData => {},
   getEvents: () => {},
+  isLoading: false
 })
