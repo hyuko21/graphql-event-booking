@@ -15,10 +15,12 @@ import eventsApi from './services/api/events'
 
 const INITIAL_STATE = {
   auth: {
+    errors: null,
     userId: null,
     token: null,
   },
   events: {
+    errors: null,
     events: [],
     isLoading: false,
   },
@@ -37,7 +39,15 @@ function App() {
 
     async login(loginData) {
       const result = await authApi.login(loginData)
-      setAuthState(result.data.login)
+
+      if (result.errors) {
+        setAuthState({
+          ...INITIAL_STATE.auth,
+          errors: result.errors
+        })
+      } else {
+        setAuthState(result.data.login)
+      }
     },
 
     logout() {

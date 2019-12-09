@@ -1,0 +1,14 @@
+.error {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.error__item {
+  font-size: 15px;
+  background: #f54242;
+  width: 100%;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 5px;
+}

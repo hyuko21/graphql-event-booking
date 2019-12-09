@@ -1,5 +1,7 @@
 import React, { useState, useRef, useContext } from 'react'
 
+import Error from '../../components/Error'
+
 import AuthContext from '../../context/auth-context'
 
 import './styles.css'
@@ -30,12 +32,14 @@ function AuthPage() {
     }
 
     await authContext.createUser({ email, password })
-    switchModeHandler()
   }
 
   return (
     <form className='auth-form' onSubmit={submitHandler}>
       <h1>{isLogin ? 'Login' : 'Signup'}</h1>
+      {authContext.errors ? (
+        <Error errors={authContext.errors} />
+      ) : null}
       <div className='form-control'>
         <label htmlFor='email'>E-mail</label>
         <input type='email' id='email' ref={emailRef} />
