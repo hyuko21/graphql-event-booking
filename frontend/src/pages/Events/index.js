@@ -87,11 +87,11 @@ function EventsPage() {
         </Modal>
       )}
       {selectedEvent && (
-        <Modal title='Event Details' onCancel={modalCancelHandler} onConfirm={bookEventHandler} confirmText={'Book'}>
+        <Modal title='Event Details' onCancel={modalCancelHandler} onConfirm={bookEventHandler} confirmText='Book'>
           <h1>{selectedEvent.title}</h1>
           <h1>
-            {selectedEvent.price.toLocaleString('en-US', { currency: 'USD', style: 'currency' })} -{' '}
-            {new Date(selectedEvent.date).toLocaleDateString()}
+            {selectedEvent.price.toLocaleString('en-US', { currency: 'USD', style: 'currency' })} -&nbsp;
+            {new Date(selectedEvent.date).toDateString()}
           </h1>
           <p>{selectedEvent.description}</p>
         </Modal>

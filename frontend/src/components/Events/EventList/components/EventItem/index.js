@@ -6,7 +6,7 @@ const EventItem = ({ event, userId, onClickDetail }) => (
   <li className='events__list-item'>
     <div>
       <h1>{event.title}</h1>
-      <h2>{event.price.toLocaleString('en-US', { currency: 'USD', style: 'currency' })} - {new Date(event.date).toLocaleDateString()}</h2>
+      <h2>{event.price.toLocaleString('en-US', { currency: 'USD', style: 'currency' })} - {new Date(event.date).toDateString()}</h2>
     </div>
     <div>
       {userId === event.creatorId ? (
