@@ -12,6 +12,7 @@ import './App.css'
 
 import authApi from './services/api/auth'
 import eventsApi from './services/api/events'
+import bookingsApi from './services/api/bookings'
 
 const INITIAL_STATE = {
   auth: {
@@ -24,11 +25,17 @@ const INITIAL_STATE = {
     events: [],
     isLoading: false,
   },
+  bookings: {
+    errors: null,
+    bookings: [],
+    isLoading: false,
+  },
 }
 
 function App() {
   const [authState, setAuthState] = useState(INITIAL_STATE.auth)
   const [eventsState, setEventsState] = useState(INITIAL_STATE.events)
+  const [bookingsState, setBookingsState] = useState(INITIAL_STATE.bookings)
 
   const auth = {
     ...authState,
@@ -43,7 +50,7 @@ function App() {
       if (result.errors) {
         setAuthState({
           ...INITIAL_STATE.auth,
-          errors: result.errors
+          errors: result.errors,
         })
       } else {
         setAuthState(result.data.login)
@@ -77,9 +84,32 @@ function App() {
     },
   }
 
+  const bookings = {
+    ...bookingsState,
+
+    async bookEvent(eventId) {
+      const currentBookings = bookingsState.bookings
+
+      setBookingsState({ isLoading: true })
+
+      const result = await bookingsApi.bookEvent(eventId, auth.token)
+
+      setBookingsState({ bookings: [...currentBookings, result.data.bookEvent], isLoading: false })
+    },
+
+    async getBookings() {
+      setBookingsState({ isLoading: true })
+
+      const result = await bookingsApi.bookings(auth.token)
+
+      setBookingsState({ bookings: result.data.bookings, isLoading: false })
+    },
+  }
+
   const store = {
     auth,
     events,
+    bookings,
   }
 
   return (

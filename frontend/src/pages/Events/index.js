@@ -7,12 +7,14 @@ import EventList from '../../components/Events/EventList'
 
 import AuthContext from '../../context/auth-context'
 import EventsContext from '../../context/events-context'
+import BookingsContext from '../../context/bookings-context'
 
 import './styles.css'
 
-function EventsPage() {
+function EventsPage(props) {
   const authContext = useContext(AuthContext)
   const eventsContext = useContext(EventsContext)
+  const bookingsContext = useContext(BookingsContext)
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState(null)
@@ -29,7 +31,7 @@ function EventsPage() {
     setIsCreatingEvent(true)
   }
 
-  const modalConfirmHandler = async () => {
+  const createEventHandler = async () => {
     const title = titleRef.current.value
     const price = +priceRef.current.value
     const date = dateRef.current.value
@@ -51,7 +53,17 @@ function EventsPage() {
     setSelectedEvent(null)
   }
 
-  const bookEventHandler = () => {}
+  const bookEventHandler = async () => {
+    if (!authContext.token) {
+      setSelectedEvent(null)
+
+      return props.history.push('/auth')
+    }
+
+    await bookingsContext.bookEvent(selectedEvent._id)
+
+    setSelectedEvent(null)
+  }
 
   const showDetailHandler = eventId => {
     const event = eventsContext.events.find(e => e._id === eventId)
@@ -65,7 +77,7 @@ function EventsPage() {
     <>
       {(isCreatingEvent || selectedEvent) && <Backdrop onClick={modalCancelHandler} />}
       {isCreatingEvent && (
-        <Modal title='Add Event' onCancel={modalCancelHandler} onConfirm={modalConfirmHandler}>
+        <Modal title='Add Event' onCancel={modalCancelHandler} onConfirm={createEventHandler}>
           <form>
             <div className='form-control'>
               <label htmlFor='title'>Title</label>
@@ -87,7 +99,12 @@ function EventsPage() {
         </Modal>
       )}
       {selectedEvent && (
-        <Modal title='Event Details' onCancel={modalCancelHandler} onConfirm={bookEventHandler} confirmText='Book'>
+        <Modal
+          title='Event Details'
+          onCancel={modalCancelHandler}
+          onConfirm={bookEventHandler}
+          confirmText={authContext.token ? 'Book' : 'You must Log in first'}
+        >
           <h1>{selectedEvent.title}</h1>
           <h1>
             {selectedEvent.price.toLocaleString('en-US', { currency: 'USD', style: 'currency' })} -&nbsp;
