@@ -63,7 +63,7 @@ function EventsPage() {
 
   return (
     <>
-      {isCreatingEvent || (selectedEvent && <Backdrop onClick={modalCancelHandler} />)}
+      {(isCreatingEvent || selectedEvent) && <Backdrop onClick={modalCancelHandler} />}
       {isCreatingEvent && (
         <Modal title='Add Event' onCancel={modalCancelHandler} onConfirm={modalConfirmHandler}>
           <form>
@@ -87,7 +87,7 @@ function EventsPage() {
         </Modal>
       )}
       {selectedEvent && (
-        <Modal title='Add Event' onCancel={modalCancelHandler} onConfirm={bookEventHandler} confirmText={'Book'}>
+        <Modal title='Event Details' onCancel={modalCancelHandler} onConfirm={bookEventHandler} confirmText={'Book'}>
           <h1>{selectedEvent.title}</h1>
           <h1>
             {selectedEvent.price.toLocaleString('en-US', { currency: 'USD', style: 'currency' })} -{' '}
