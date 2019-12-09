@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { EventItem } from './parts'
+import { EventItem } from './components'
 
 import './styles.css'
 
