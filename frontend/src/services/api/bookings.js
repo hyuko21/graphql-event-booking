@@ -41,4 +41,16 @@ export default {
       authToken
     )
   },
+  cancelBooking(bookingId, authToken) {
+    return api.request(
+      {
+        query: `
+        mutation {
+          cancelBooking(bookingId: "${bookingId}")
+        }
+      `,
+      },
+      authToken
+    )
+  },
 }

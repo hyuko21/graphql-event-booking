@@ -97,6 +97,21 @@ function App() {
       setBookingsState({ bookings: [...currentBookings, result.data.bookEvent], isLoading: false })
     },
 
+    async cancelBooking(bookingId) {
+      const currentBookings = bookingsState.bookings
+
+      const result = await bookingsApi.cancelBooking(bookingId)
+
+      if (result.errors) {
+        setBookingsState({
+          ...bookingsState,
+          errors: result.errors,
+        })
+      } else {
+        await this.getBookings()
+      }
+    },
+
     async getBookings() {
       setBookingsState({ isLoading: true })
 

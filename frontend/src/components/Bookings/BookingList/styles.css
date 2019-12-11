@@ -1,0 +1,7 @@
+.bookings__list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem auto;
+  width: 40rem;
+  max-width: 80%;
+}

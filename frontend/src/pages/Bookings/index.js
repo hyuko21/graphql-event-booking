@@ -1,8 +1,12 @@
 import React, { useContext, useEffect } from 'react'
 
+import Error from '../../components/Error'
 import Spinner from '../../components/Spinner'
+import BookingList from '../../components/Bookings/BookingList'
 
 import BookingsContext from '../../context/bookings-context'
+
+import './styles.css'
 
 function BookingsPage() {
   const bookingsContext = useContext(BookingsContext)
@@ -11,20 +15,19 @@ function BookingsPage() {
     bookingsContext.getBookings()
   }, [])
 
+  const onCancelBooking = async bookingId => {
+    await bookingsContext.cancelBooking(bookingId)
+  }
+
   if (bookingsContext.isLoading) {
     return <Spinner />
   }
 
   return (
-    <div>
-      <h1>The Bookings Page</h1>
-      <ul>
-        {bookingsContext.bookings.map(booking => (
-          <li key={booking._id}>
-            {booking.event.title} - {new Date(booking.createdAt).toDateString()}
-          </li>
-        ))}
-      </ul>
+    <div className='bookings'>
+      <h1>My bookings</h1>
+      {bookingsContext.errors ? <Error errors={bookingsContext.errors} /> : null}
+      <BookingList bookings={bookingsContext.bookings} onDelete={onCancelBooking} />
     </div>
   )
 }
